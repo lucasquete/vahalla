@@ -52,11 +52,13 @@ const Trending = ({ movies }) => {
             }`}
             key={i}
           >
-            <img
-              className="w-full h-full object-cover lg:rounded-tl-3xl lg:rounded-bl-3xl"
-              src={`${movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` :"/noimage.png" }`}
-              alt={movies.title}
-            />
+            <Link href={movie.media_type === "movie" ? `/movie/${movie.id}` : `/serie/${movie.id}`}>
+              <img
+                className="w-full h-full object-cover lg:rounded-tl-3xl lg:rounded-bl-3xl"
+                src={`${movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` :"/noimage.png" }`}
+                alt={movies.title}
+              />
+            </Link>
             <div className="bg-white text-black lg:flex hidden flex-col justify-center items-center w-full h-full md:rounded-tr-3xl md:rounded-br-3xl">
               <div className="p-8 flex flex-col justify-center gap-6">
                 <span className="p-2 rounded-md font-semibold text-xl bg-amber-300 w-fit">
