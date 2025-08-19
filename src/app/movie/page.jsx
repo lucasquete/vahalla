@@ -37,6 +37,11 @@ const page = () => {
     };
 
     fetchMovies();
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   }, [page]);
 
   if (!movies) {

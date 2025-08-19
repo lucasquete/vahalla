@@ -10,6 +10,7 @@ import {
   Search01Icon,
   ComputerVideoIcon,
   Comment02Icon,
+  FavouriteIcon
 } from "@hugeicons/core-free-icons";
 
 const Navbar = ({ menuOpen, setMenuOpen }) => {
@@ -21,6 +22,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
   const search = separetePath === "search";
   const watch = separetePath === "watch";
   const chat = separetePath === "chat";
+  const favourite = separetePath === "favourite";
 
   return (
     <div
@@ -104,7 +106,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
           </li>
         </Link>
         <Link
-          href={"/watch"}
+          href={"/watch/1061474?type=movie"}
           className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${
             watch
               ? "bg-purple-900/50 border-cyan-300"
@@ -173,6 +175,30 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             } ${chat ? "text-cyan-300" : "text-white"}`}
           >
             Chat
+          </li>
+        </Link>
+        <Link
+          href={"/favoritas"}
+          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${
+            favourite
+              ? "bg-purple-900/50 border-cyan-300"
+              : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
+          }`}
+          onClick={() => setMenuOpen(menuOpen && !menuOpen)}
+        >
+          <HugeiconsIcon
+            icon={FavouriteIcon}
+            size={24}
+            color="currentColor"
+            strokeWidth={2}
+            className={` ${favourite ? "text-cyan-300" : "text-white"}`}
+          />
+          <li
+            className={`font-bold font-display tracking-wide ${
+              menuOpen ? "lg:hidden" : "md:hidden lg:block"
+            } ${favourite ? "text-cyan-300" : "text-white"}`}
+          >
+            Favourites
           </li>
         </Link>
       </ul>

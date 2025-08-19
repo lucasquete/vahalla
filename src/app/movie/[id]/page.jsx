@@ -43,7 +43,7 @@ const page = () => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-8 sm:px-6 pb-6 p-2">
-      <Details movie={movie} id={id} />
+      <Details movie={movie} id={id} type="movie" />
       <RecoMovies id={id} />
     </div>
   );

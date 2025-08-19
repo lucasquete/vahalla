@@ -65,11 +65,11 @@ const Search = ({ menuOpen, setMenuOpen }) => {
           </h1>
         </Link>
       </div>
-      <div className="relative flex items-center w-[300px] gap-2">
+      <div className="relative flex items-center md:w-[300px] w-[200px] gap-2">
         <input
           type="text"
           placeholder="Search"
-          className="flex-grow bg-purple-900/50 border-2 pr-12 border-purple-500/80 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/50 rounded-md px-3 py-2 text-white placeholder-purple-300/70 transition duration-300"
+          className="flex-grow bg-purple-900/50 md:w-[300px] w-[200px] border-2 pr-12 border-purple-500/80 focus:border-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-300/50 rounded-md px-3 py-2 text-white placeholder-purple-300/70 transition duration-300"
           onChange={handleChange}
           value={text}
         />
@@ -105,7 +105,7 @@ const Search = ({ menuOpen, setMenuOpen }) => {
                     alt=""
                     className="w-[40px] h-[40px] object-cover rounded-md"
                   />
-                  <div>
+                  <div className="text-sm md:text-base">
                     {mov.media_type === "tv" ? (
                       <span>{mov.name}</span>
                     ) : (

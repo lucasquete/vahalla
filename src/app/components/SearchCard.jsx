@@ -1,31 +1,33 @@
-import Link from "next/link";
+import SearchMovieCard from "./searchCards/SearchMovieCard";
+import SearchSerieCard from "./searchCards/SearchSerieCard";
 
 const SearchCard = ({ series, type }) => {
+  if (!Array.isArray(series)) {
+    return null;
+  }
+
   return (
     <div className="grid md:grid-cols-3 xl:grid-cols-4 gap-4 sm:grid-cols-2 grid-cols-2">
-      {series.map((serie) =>
-        type === "movies" ? (
-          <Link key={serie.id} href={`/movie/${serie.id}`} className="block">
-            <div className="border rounded-lg xl:h-[500px] lg:h-[450px] border-white/50 shadow-[0_0_10px_rgba(255,255,255,0.5)]">
-              <img
-                src={`${serie.poster_path ? `https://image.tmdb.org/t/p/w500${serie.poster_path}` :"/noimage.png" }`}
-                className="w-full rounded-t-lg h-[93%] object-cover"
-              />
-              <p className="p-2 text-center truncate">{serie.title}</p>
-            </div>
-          </Link>
-        ) : (
-          <Link key={serie.id} href={`/serie/${serie.id}`} className="block">
-            <div className="rounded-lg border-2 xl:h-[500px] lg:h-[450px] border-purple-500/50 shadow-[0_0_10px_rgba(255,0,255,0.5)]">
-              <img
-                src={`${serie.poster_path ? `https://image.tmdb.org/t/p/w500${serie.poster_path}` :"/noimage.png" }`}
-                className="w-full rounded-t-lg h-[93%] object-cover"
-              />
-              <p className="p-2 text-center truncate">{serie.name}</p>
-            </div>
-          </Link>
-        )
-      )}
+      {series.map((item) => {
+       
+        if (!item || !item.id) return null;
+
+        if (type === "all") {
+          if (item.media_type === "movie") {
+            return <SearchMovieCard key={item.id} movie={item} />;
+          }
+          if (item.media_type === "tv") {
+            return <SearchSerieCard key={item.id} serie={item} />;
+          }
+          return null;
+        }
+
+        if (type === "movies") {
+          return <SearchMovieCard key={item.id} movie={item} />;
+        }
+        
+        return <SearchSerieCard key={item.id} serie={item} />;
+      })}
     </div>
   );
 };

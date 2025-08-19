@@ -98,14 +98,14 @@ const page = () => {
     <section className="min-h-screen sm:px-6 pb-6 p-2 flex flex-col gap-10">
       <div className="flex flex-col items-center">
         <h1
-          className="mb-8 font-display text-3xl text-center md:text-4xl font-black text-cyan-300 tracking-widest flicker-slow"
+          className="mb-8 font-display text-2xl md:text-4xl text-center font-black text-cyan-300 tracking-widest flicker-slow"
           style={{
             textShadow: "0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 20px #ff00ff",
           }}
         >
           {type === "movie" ? movie.title : movie.name}
         </h1>
-        <div className="aspect-video w-full bg-black border-2 rounded-lg border-purple-500/50 shadow-[0_0_15px_rgba(255,0,255,0.5)]">
+        <div className="w-full h-[400px] md:aspect-video md:h-full bg-black border-2 rounded-lg border-purple-500/50 shadow-[0_0_15px_rgba(255,0,255,0.5)]">
           <iframe
             src={embedUrl}
             className="w-full h-full border-none rounded-lg"

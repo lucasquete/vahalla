@@ -35,23 +35,28 @@ const page = () => {
     };
 
     fetchMovies();
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   }, [page]);
 
   if (!series) {
-    return <Loading/>
+    return <Loading />
   }
 
   if (error) {
-    return <Error error={error}/>;
+    return <Error error={error} />;
   }
 
   return (
     <div className="sm:px-6 pb-6 p-2 flex flex-col items-center justify-center gap-6">
-        <Title title="Popular Series"/>
-        <Pagination totalPages={500} page={page} setPage={setPage} />
-        <SerieCard series={series}/>
-        <Pagination totalPages={500} page={page} setPage={setPage} />
-      </div>
+      <Title title="Popular Series" />
+      <Pagination totalPages={500} page={page} setPage={setPage} />
+      <SerieCard series={series} />
+      <Pagination totalPages={500} page={page} setPage={setPage} />
+    </div>
   )
 }
 

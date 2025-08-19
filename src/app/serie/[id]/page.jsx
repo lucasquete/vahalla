@@ -47,7 +47,7 @@ const page = () => {
 
   return (
     <section className="flex flex-col items-center justify-center gap-8 sm:px-6 pb-6 p-2">
-      <Details movie={movie} id={id} />
+      <Details movie={movie} id={id} type="serie" />
       <div className="grid md:grid-cols-3 xl:grid-cols-4 gap-4 sm:grid-cols-2 grid-cols-2">
         {seasons.map((season) => (
           <Link

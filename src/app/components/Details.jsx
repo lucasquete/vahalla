@@ -2,9 +2,27 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
-const Details = ({ movie, id }) => {
+const Details = ({ movie, id, type }) => {
   const path = usePathname();
   const separetePath = path.split("/")[1];
+
+  const addFavourite = () => {
+    if (type === "movie") {
+      const favouriteMovies = JSON.parse(localStorage.getItem("favouriteMovies")) || [];
+      if (favouriteMovies.some((m) => m.id === movie.id)) {
+        return;
+      }
+      const newFavouriteMovies = [...favouriteMovies, movie];
+      localStorage.setItem("favouriteMovies", JSON.stringify(newFavouriteMovies));
+    } else {
+      const favouriteMovies = JSON.parse(localStorage.getItem("favouriteSeries")) || [];
+      if (favouriteMovies.some((m) => m.id === movie.id)) {
+        return;
+      }
+      const newFavouriteMovies = [...favouriteMovies, movie];
+      localStorage.setItem("favouriteSeries", JSON.stringify(newFavouriteMovies));
+    }
+  }
 
   return (
     <div className="md:flex-row flex-col flex gap-6 text-sm md:text-base">
@@ -78,7 +96,7 @@ const Details = ({ movie, id }) => {
                 </button>
             </Link>
             )}
-          <button className="p-3 border-none bg-white text-black flex items-center justify-center gap-2 cursor-pointer rounded-md outline-none">
+          <button onClick={addFavourite} className="p-3 border-none bg-white text-black flex items-center justify-center gap-2 cursor-pointer rounded-md outline-none">
             <span className="text-2xl font-bold">+ </span>Add Favourite
           </button>
         </div>

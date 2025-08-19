@@ -9,66 +9,60 @@ import Error from "@/app/components/Error";
 import Pagination from "@/app/components/Pagination";
 import SearchCard from "@/app/components/SearchCard";
 
-const page = () => {
+const Page = () => {
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
+  const [isLoading, setIsLoading] = useState(true);
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [type, setType] = useState("all");
   const [totalPages, setTotalPages] = useState(0);
-  const params = useParams();
-  const { query } = params;
+  const { query } = useParams();
 
-  const types = [
-    {
-      name: "all",
-    },
-    {
-      name: "movies",
-    },
-    {
-      name: "series",
-    },
-  ];
+  const types = [{ name: "all" }, { name: "movies" }, { name: "series" }];
 
   useEffect(() => {
+    if (!query) {
+      setIsLoading(false);
+      return;
+    }
+
     const fetchMovies = async () => {
+      setError(null);
+      setIsLoading(true);
+    
+      let endpoint = "";
+      if (type === "movies") {
+        endpoint = "search/movie";
+      } else if (type === "series") {
+        endpoint = "search/tv";
+      } else {
+        endpoint = "search/multi";
+      }
+
+      const URL = `https://api.themoviedb.org/3/${endpoint}?query=${query}&api_key=${API_KEY}&include_adult=false&language=en-US&page=${page}`;
+
       try {
-        if (type === "all") {
-          const response = await axios.get(
-            // `https://api.themoviedb.org/3/search/keyword?query=${query}&page=1&api_key=${API_KEY}`
-            `https://api.themoviedb.org/3/search/multi?query=${query}&api_key=${API_KEY}&include_adult=false&language=en-US&page=${page}`
-          );
-          const data = response.data;
-          setMovies(data.results);
-          setTotalPages(data.total_pages);
-        } else if (type === "movies") {
-          const response = await axios.get(
-            // `https://api.themoviedb.org/3/search/keyword?query=${query}&page=1&api_key=${API_KEY}`
-            `https://api.themoviedb.org/3/search/movie?query=${query}&api_key=${API_KEY}&include_adult=false&language=en-US&page=${page}`
-          );
-          const data = response.data;
-          setMovies(data.results);
-          setTotalPages(data.total_pages);
-        } else {
-          const response = await axios.get(
-            // `https://api.themoviedb.org/3/search/keyword?query=${query}&page=1&api_key=${API_KEY}`
-            `https://api.themoviedb.org/3/search/tv?query=${query}&api_key=${API_KEY}&include_adult=false&language=en-US&page=${page}`
-          );
-          const data = response.data;
-          setMovies(data.results);
-          setTotalPages(data.total_pages);
-        }
-      } catch (error) {
-        console.log(error);
-        setError(error.message);
+        const response = await axios.get(URL);
+        const data = response.data;
+
+        setMovies(data.results || []);
+        setTotalPages(data.total_pages || 0);
+
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError("Could not fetch data. Please try again later.");
+        setMovies([]);
+      } finally {
+        setIsLoading(false);
       }
     };
+
     fetchMovies();
   }, [query, page, type]);
 
-  if (!movies) {
+  if (isLoading) {
     return <Loading />;
   }
 
@@ -78,8 +72,8 @@ const page = () => {
 
   return (
     <div className="sm:px-6 pb-6 p-2 flex flex-col items-center justify-center gap-6">
-      <Title title="Search Results" />
-      <div className="flex gap-4 w-full">
+      <Title title={`Search Results for "${query}"`} />
+      <div className="flex gap-4 w-full justify-center">
         {types.map((t) => (
           <div
             key={t.name}
@@ -88,17 +82,27 @@ const page = () => {
                 ? "bg-purple-900/30 rounded-md text-cyan-300"
                 : "bg-purple-900/50"
             }`}
-            onClick={() => setType(t.name)}
+            onClick={() => {
+              setPage(1); 
+              setType(t.name);
+            }}
           >
             {t.name}
           </div>
         ))}
       </div>
-      <Pagination totalPages={totalPages} page={page} setPage={setPage} />
-      <SearchCard series={movies} type={type} />
-      <Pagination totalPages={totalPages} page={page} setPage={setPage} />
+
+      {totalPages > 1 && <Pagination totalPages={totalPages} page={page} setPage={setPage} />}
+ 
+      {movies.length > 0 ? (
+        <SearchCard series={movies} type={type} />
+      ) : (
+        <div className="text-white text-xl mt-8">No results found.</div>
+      )}
+
+      {totalPages > 1 && <Pagination totalPages={totalPages} page={page} setPage={setPage} />}
     </div>
   );
 };
 
-export default page;
+export default Page;

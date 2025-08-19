@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Search from "./components/Search";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,6 +23,16 @@ const geistMono = Geist_Mono({
 
 export default function RootLayout({ children }) {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const pathname = usePathname(); // 3. Obtén la ruta actual
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, [pathname]);
+
   return (
     <html lang="en">
       <body
@@ -32,11 +43,10 @@ export default function RootLayout({ children }) {
           <div className="flex">
             <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
             <div
-              className={`flex-5/6 mt-20 ${
-                menuOpen
+              className={`flex-5/6 mt-20 ${menuOpen
                   ? "lg:ml-18 md:ml-50"
                   : "lg:ml-50 md:ml-16"
-              }`}
+                }`}
             >
               {children}
             </div>
