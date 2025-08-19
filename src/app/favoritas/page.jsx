@@ -158,7 +158,7 @@ const Page = () => {
             )}
 
             {notification.show && (
-                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-600 text-white py-2 px-5 rounded-lg shadow-xl z-50 animate-fade-in-out">
+                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-600 text-center text-white py-2 px-5 rounded-lg shadow-xl z-50 animate-fade-in-out">
                     {notification.message}
                 </div>
             )}

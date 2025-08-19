@@ -12,6 +12,7 @@ import {
   Comment02Icon,
   FavouriteIcon
 } from "@hugeicons/core-free-icons";
+import { useEffect, useRef, useState } from "react";
 
 const Navbar = ({ menuOpen, setMenuOpen }) => {
   const path = usePathname();
@@ -24,20 +25,68 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
   const chat = separetePath === "chat";
   const favourite = separetePath === "favourite";
 
+  const [content, setContent] = useState(null);
+  const navbarRef = useRef(null);
+
+  useEffect(() => {
+    const updateStateFromStorage = () => {
+      const lastWatchedContent = localStorage.getItem("lastWatchedContent");
+      if (lastWatchedContent) {
+        setContent(JSON.parse(lastWatchedContent));
+      }
+    };
+
+    updateStateFromStorage();
+
+    const handleStorageChange = (event) => {
+      setContent(event.detail);
+    };
+
+    window.addEventListener('onLocalStorageChange', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('onLocalStorageChange', handleStorageChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuOpen && navbarRef.current && !navbarRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuOpen, setMenuOpen]);
+
+  const getWatchUrl = () => {
+    if (!content || !content.id) {
+      return "/";
+    }
+    if (content.type === "movie") {
+      return `/watch/${content.id}?type=movie`;
+    } else {
+      return `/watch/${content.id}?type=serie&season=${content.season}&episode=${content.episode}`;
+    }
+  };
+
   return (
     <div
-      className={`flex-1/6 #0d0a1a fixed h-[90vh] top-18 l-0 ${
-        menuOpen ? "w-[200px] lg:w-fit" : "lg:w-[200px] hidden md:flex"
-      } flex-col justify-between z-10 bg-[#0d0a1a]`}
+      ref={navbarRef}
+      className={`flex-1/6 #0d0a1a fixed h-[90vh] top-18 l-0 ${menuOpen ? "w-[200px] lg:w-fit" : "lg:w-[200px] hidden md:flex"
+        } flex-col justify-between z-10 bg-[#0d0a1a]`}
     >
       <ul className="flex flex-col text-md font-semibold cursor-pointer">
         <Link
           href={"/"}
-          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${
-            home
-              ? "bg-purple-900/50 border-cyan-300"
-              : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
-          } 
+          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${home
+            ? "bg-purple-900/50 border-cyan-300"
+            : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
+            } 
             ${menuOpen ? "md:flex-row lg:flex-col" : "lg:flex-row md:flex-col"}`}
           onClick={() => setMenuOpen(menuOpen && !menuOpen)}
 
@@ -59,11 +108,10 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
         </Link>
         <Link
           href={"/movie"}
-          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${
-            movie
-              ? "bg-purple-900/50 border-cyan-300"
-              : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
-          }`}
+          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${movie
+            ? "bg-purple-900/50 border-cyan-300"
+            : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
+            }`}
           onClick={() => setMenuOpen(menuOpen && !menuOpen)}
         >
           <HugeiconsIcon
@@ -74,20 +122,18 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             className={` ${movie ? "text-cyan-300" : "text-white"}`}
           />
           <li
-            className={`font-bold font-display tracking-wide ${
-              menuOpen ? "lg:hidden" : "md:hidden lg:block"
-            } ${movie ? "text-cyan-300" : "text-white"}`}
+            className={`font-bold font-display tracking-wide ${menuOpen ? "lg:hidden" : "md:hidden lg:block"
+              } ${movie ? "text-cyan-300" : "text-white"}`}
           >
             Movies
           </li>
         </Link>
         <Link
           href={"/serie"}
-          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${
-            serie
-              ? "bg-purple-900/50 border-cyan-300"
-              : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
-          }`}
+          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${serie
+            ? "bg-purple-900/50 border-cyan-300"
+            : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
+            }`}
           onClick={() => setMenuOpen(menuOpen && !menuOpen)}
         >
           <HugeiconsIcon
@@ -98,20 +144,18 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             className={` ${serie ? "text-cyan-300" : "text-white"}`}
           />
           <li
-            className={`font-bold font-display tracking-wide ${
-              menuOpen ? "lg:hidden" : "md:hidden lg:block"
-            } ${serie ? "text-cyan-300" : "text-white"}`}
+            className={`font-bold font-display tracking-wide ${menuOpen ? "lg:hidden" : "md:hidden lg:block"
+              } ${serie ? "text-cyan-300" : "text-white"}`}
           >
             Series
           </li>
         </Link>
         <Link
-          href={"/watch/1061474?type=movie"}
-          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${
-            watch
-              ? "bg-purple-900/50 border-cyan-300"
-              : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
-          }`}
+          href={getWatchUrl()} // Usamos la función auxiliar para más seguridad
+          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${watch
+            ? "bg-purple-900/50 border-cyan-300"
+            : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
+            }`}
           onClick={() => setMenuOpen(menuOpen && !menuOpen)}
         >
           <HugeiconsIcon
@@ -122,20 +166,19 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             className={` ${watch ? "text-cyan-300" : "text-white"}`}
           />
           <li
-            className={`font-bold font-display tracking-wide ${
-              menuOpen ? "lg:hidden" : "md:hidden lg:block"
-            } ${watch ? "text-cyan-300" : "text-white"}`}
+            className={`font-bold font-display tracking-wide ${menuOpen ? "lg:hidden" : "md:hidden lg:block"
+              } ${watch ? "text-cyan-300" : "text-white"}`}
           >
+            {/* Opcional: Puedes deshabilitar el botón si no hay nada que ver */}
             Watch
           </li>
         </Link>
         <Link
           href={"/search/a"}
-          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${
-            search
-              ? "bg-purple-900/50 border-cyan-300"
-              : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
-          }`}
+          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${search
+            ? "bg-purple-900/50 border-cyan-300"
+            : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
+            }`}
           onClick={() => setMenuOpen(menuOpen && !menuOpen)}
         >
           <HugeiconsIcon
@@ -146,20 +189,18 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             className={` ${search ? "text-cyan-300" : "text-white"}`}
           />
           <li
-            className={`font-bold font-display tracking-wide ${
-              menuOpen ? "lg:hidden" : "md:hidden lg:block"
-            } ${search ? "text-cyan-300" : "text-white"}`}
+            className={`font-bold font-display tracking-wide ${menuOpen ? "lg:hidden" : "md:hidden lg:block"
+              } ${search ? "text-cyan-300" : "text-white"}`}
           >
             Search
           </li>
         </Link>
         <Link
           href={"/chat"}
-          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${
-            chat
-              ? "bg-purple-900/50 border-cyan-300"
-              : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
-          }`}
+          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${chat
+            ? "bg-purple-900/50 border-cyan-300"
+            : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
+            }`}
           onClick={() => setMenuOpen(menuOpen && !menuOpen)}
         >
           <HugeiconsIcon
@@ -170,20 +211,18 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             className={` ${chat ? "text-cyan-300" : "text-white"}`}
           />
           <li
-            className={`font-bold font-display tracking-wide ${
-              menuOpen ? "lg:hidden" : "md:hidden lg:block"
-            } ${chat ? "text-cyan-300" : "text-white"}`}
+            className={`font-bold font-display tracking-wide ${menuOpen ? "lg:hidden" : "md:hidden lg:block"
+              } ${chat ? "text-cyan-300" : "text-white"}`}
           >
             Chat
           </li>
         </Link>
         <Link
           href={"/favoritas"}
-          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${
-            favourite
-              ? "bg-purple-900/50 border-cyan-300"
-              : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
-          }`}
+          className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${favourite
+            ? "bg-purple-900/50 border-cyan-300"
+            : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
+            }`}
           onClick={() => setMenuOpen(menuOpen && !menuOpen)}
         >
           <HugeiconsIcon
@@ -194,9 +233,8 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             className={` ${favourite ? "text-cyan-300" : "text-white"}`}
           />
           <li
-            className={`font-bold font-display tracking-wide ${
-              menuOpen ? "lg:hidden" : "md:hidden lg:block"
-            } ${favourite ? "text-cyan-300" : "text-white"}`}
+            className={`font-bold font-display tracking-wide ${menuOpen ? "lg:hidden" : "md:hidden lg:block"
+              } ${favourite ? "text-cyan-300" : "text-white"}`}
           >
             Favourites
           </li>

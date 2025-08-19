@@ -52,7 +52,7 @@ const page = () => {
         {seasons.map((season) => (
           <Link
             key={season.id}
-            href={`/watch/${id}?type-serie&season=${season.season_number}&episode=${season.episode_count}`}
+            href={`/watch/${id}?type=serie&season=${season.season_number}&episode=${season.episode_count}`}
             className="block"
           >
             <div className="rounded-lg border-2 xl:h-[500px] lg:h-[450px] border-purple-500/50 shadow-[0_0_10px_rgba(255,0,255,0.5)]">

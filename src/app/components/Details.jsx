@@ -1,10 +1,33 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const Details = ({ movie, id, type }) => {
   const path = usePathname();
   const separetePath = path.split("/")[1];
+
+  const [notification, setNotification] = useState({ show: false, message: "" });
+  const notificationTimer = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (notificationTimer.current) {
+        clearTimeout(notificationTimer.current);
+      }
+    };
+  }, []);
+
+  const showNotification = (message) => {
+    if (notificationTimer.current) {
+      clearTimeout(notificationTimer.current);
+    }
+
+    setNotification({ show: true, message });
+
+    notificationTimer.current = setTimeout(() => {
+      setNotification({ show: false, message: "" });
+    }, 3000);
+  };
 
   const addFavourite = () => {
     if (type === "movie") {
@@ -14,6 +37,7 @@ const Details = ({ movie, id, type }) => {
       }
       const newFavouriteMovies = [...favouriteMovies, movie];
       localStorage.setItem("favouriteMovies", JSON.stringify(newFavouriteMovies));
+      showNotification("Movie added successfully!");
     } else {
       const favouriteMovies = JSON.parse(localStorage.getItem("favouriteSeries")) || [];
       if (favouriteMovies.some((m) => m.id === movie.id)) {
@@ -21,11 +45,17 @@ const Details = ({ movie, id, type }) => {
       }
       const newFavouriteMovies = [...favouriteMovies, movie];
       localStorage.setItem("favouriteSeries", JSON.stringify(newFavouriteMovies));
+      showNotification("Serie added successfully!");
     }
   }
 
   return (
     <div className="md:flex-row flex-col flex gap-6 text-sm md:text-base">
+      {notification.show && (
+        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-600 text-center text-white py-2 px-5 rounded-lg shadow-xl z-50 animate-fade-in-out">
+          {notification.message}
+        </div>
+      )}
       <div className="flex-1 w-full h-full">
         <img
           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
@@ -50,13 +80,13 @@ const Details = ({ movie, id, type }) => {
             <span className="font-semibold">
               Release Date:{" "}
               <span className="font-normal text-white/40">
-                {movie.release_date}
+                {type === "movie" ? movie.release_date : movie.first_air_date}
               </span>
             </span>
             <span className="font-semibold">
-              Runtime:{" "}
+              {type === "movie" ? "Runtime:" : "Episodes:"}{" "}
               <span className="font-normal text-white/40">
-                {movie.runtime} min
+                {type === "movie" ? movie.runtime : movie.number_of_episodes} {type === "movie" ? "mins" : ""}
               </span>
             </span>
             <span className="font-semibold">
@@ -88,14 +118,14 @@ const Details = ({ movie, id, type }) => {
           </div>
         </div>
         <div className="flex gap-4">
-            {separetePath === "movie" && (
+          {separetePath === "movie" && (
 
             <Link href={`/watch/${id}?type=movie`}>
-                <button className="bg-red-600 hover:bg-red-700 text-2xl text-white font-bold p-3 rounded-md outline-none cursor-pointer">
+              <button className="bg-red-600 hover:bg-red-700 text-2xl text-white font-bold p-3 rounded-md outline-none cursor-pointer">
                 Watch Now
-                </button>
+              </button>
             </Link>
-            )}
+          )}
           <button onClick={addFavourite} className="p-3 border-none bg-white text-black flex items-center justify-center gap-2 cursor-pointer rounded-md outline-none">
             <span className="text-2xl font-bold">+ </span>Add Favourite
           </button>

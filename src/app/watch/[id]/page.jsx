@@ -15,6 +15,22 @@ import {
 import Loading from "@/app/components/Loading";
 import Error from "@/app/components/Error";
 
+const LAST_WATCHED_KEY = 'lastWatchedContent';
+
+const saveToLocalStorage = (key, value) => {
+  if (typeof window !== 'undefined') {
+    try {
+      const serializedValue = JSON.stringify(value);
+      window.localStorage.setItem(key, serializedValue);
+      
+      window.dispatchEvent(new CustomEvent('onLocalStorageChange', { detail: value }));
+
+    } catch (error) {
+      console.error("Error saving to localStorage", error);
+    }
+  }
+};
+
 const page = () => {
   const params = useParams();
   const type = useSearchParams().get("type");
@@ -62,7 +78,7 @@ const page = () => {
           );
           setDetails(res.data);
         }
-        
+
       } catch (error) {
         console.log(error)
         setError(error.message);
@@ -72,7 +88,37 @@ const page = () => {
     fetchMovieDetails();
   }, [id, season]);
 
-  // console.log(details)
+  useEffect(() => {
+
+    const saveProgress = () => {
+      if (!id || !type) return;
+
+      let dataToSave;
+
+      if (type === 'movie') {
+        dataToSave = { id, type: 'movie', title: movie?.title };
+      } else if (type === 'serie' || type === 'tv') {
+        dataToSave = { id, type: 'serie', season, episode: episode, title: movie?.name };
+      }
+
+      if (dataToSave) {
+        saveToLocalStorage(LAST_WATCHED_KEY, dataToSave);
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        saveProgress();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      saveProgress();
+    };
+  }, [id, type, season, episode, movie]);
 
   const handleEpisode = async (epi) => {
     const embedUrl = `https://vidsrc.to/embed/tv/${id}/${season}/${epi}`;
@@ -136,9 +182,8 @@ const page = () => {
             />
           )}
           <div
-            className={`${
-              isOpen ? "flex" : "hidden"
-            } flex-col border-2 border-purple-500/80 rounded-md top-12 left-0 absolute w-[200px] max-h-[200px] overflow-y-auto`}
+            className={`${isOpen ? "flex" : "hidden"
+              } flex-col border-2 border-purple-500/80 rounded-md top-12 left-0 absolute w-[200px] max-h-[200px] overflow-y-auto`}
           >
             {seasons.map((sea) => (
               <div
@@ -146,18 +191,16 @@ const page = () => {
                 onClick={() =>
                   handleSeason(sea.season_number, sea.episode_count)
                 }
-                className={`flex justify-between p-2 border-b-2 border-purple-500 cursor-pointer ${
-                  sea.season_number.toString() === season
-                    ? "bg-purple-900 text-cyan-300"
-                    : " text-white bg-purple-800 hover:bg-purple-900"
-                }`}
+                className={`flex justify-between p-2 border-b-2 border-purple-500 cursor-pointer ${sea.season_number.toString() === season
+                  ? "bg-purple-900 text-cyan-300"
+                  : " text-white bg-purple-800 hover:bg-purple-900"
+                  }`}
               >
                 <div
-                  className={`${
-                    sea.season_number.toString() === season
-                      ? "text-cyan-300"
-                      : "text-white"
-                  }`}
+                  className={`${sea.season_number.toString() === season
+                    ? "text-cyan-300"
+                    : "text-white"
+                    }`}
                 >
                   Season: {sea.season_number}
                 </div>
@@ -181,11 +224,10 @@ const page = () => {
             return (
               <div
                 onClick={() => handleEpisode(episode + 1)}
-                className={`p-2 flex-1 min-w-[130px] max-w-[150px] text-center rounded-md border-2 cursor-pointer transition-all duration-300 ${
-                  episodeSelected === episode + 1
-                    ? "bg-purple-900/50 border-cyan-300 text-cyan-300"
-                    : "bg-purple-500/50 hover:bg-purple-900/30 hover:border-purple-500 border-none  "
-                }`}
+                className={`p-2 flex-1 min-w-[130px] max-w-[150px] text-center rounded-md border-2 cursor-pointer transition-all duration-300 ${episodeSelected === episode + 1
+                  ? "bg-purple-900/50 border-cyan-300 text-cyan-300"
+                  : "bg-purple-500/50 hover:bg-purple-900/30 hover:border-purple-500 border-none  "
+                  }`}
                 key={episode}
               >
                 Episode {episode + 1}
