@@ -23,11 +23,9 @@ const Page = () => {
     const [type, setType] = useState("movies");
     const ITEMS_PER_PAGE = 20;
 
-    // NUEVO: Estado y referencia para la notificación
     const [notification, setNotification] = useState({ show: false, message: "" });
     const notificationTimer = useRef(null);
 
-    // NUEVO: useEffect para limpiar el temporizador si el componente se desmonta
     useEffect(() => {
         return () => {
             if (notificationTimer.current) {
@@ -36,17 +34,13 @@ const Page = () => {
         };
     }, []);
 
-    // NUEVO: Función para mostrar una notificación por 3 segundos
     const showNotification = (message) => {
-        // Si ya hay un temporizador activo, lo limpiamos para reiniciarlo
         if (notificationTimer.current) {
             clearTimeout(notificationTimer.current);
         }
 
-        // Mostramos la notificación
         setNotification({ show: true, message });
 
-        // Creamos un nuevo temporizador para ocultarla después de 3 segundos
         notificationTimer.current = setTimeout(() => {
             setNotification({ show: false, message: "" });
         }, 3000);
@@ -132,7 +126,6 @@ const Page = () => {
 
     return (
         <div className="sm:px-6 pb-6 p-2 flex flex-col items-center justify-center gap-6 relative">
-            {/* Modal para eliminar películas */}
             {showRemoveMovieModal && (
                 <div className="fixed w-full h-full inset-0 flex items-center justify-center bg-black/50 z-20">
                     <div className="w-fit h-fit p-4 bg-gray-900 flex items-center justify-center flex-col gap-4 rounded-md">
@@ -144,7 +137,7 @@ const Page = () => {
                     </div>
                 </div>
             )}
-            {/* NUEVO: Modal para eliminar series */}
+
             {showRemoveSerieModal && (
                 <div className="fixed w-full h-full inset-0 flex items-center justify-center bg-black/50 z-20">
                     <div className="w-fit h-fit p-4 bg-gray-900 flex items-center justify-center flex-col gap-4 rounded-md">
@@ -158,7 +151,7 @@ const Page = () => {
             )}
 
             {notification.show && (
-                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-600 text-center text-white py-2 px-5 rounded-lg shadow-xl z-50 animate-fade-in-out">
+                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-600 text-center text-white p-2 font-bold rounded-lg shadow-xl z-50 animate-fade-in-out">
                     {notification.message}
                 </div>
             )}

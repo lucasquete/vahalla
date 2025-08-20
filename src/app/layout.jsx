@@ -24,7 +24,7 @@ const geistMono = Geist_Mono({
 export default function RootLayout({ children }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const pathname = usePathname(); // 3. Obtén la ruta actual
+  const pathname = usePathname();
 
   useEffect(() => {
     window.scrollTo({

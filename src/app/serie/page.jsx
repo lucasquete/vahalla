@@ -7,12 +7,6 @@ import Loading from "../components/Loading";
 import Error from "../components/Error";
 import Pagination from "../components/Pagination";
 
-// const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
-// const res = await axios.get(
-//   `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}`
-// );
-// const series = res.data.results;
-
 const page = () => {
 
   const [series, setSeries] = useState([]);

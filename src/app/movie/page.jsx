@@ -38,6 +38,8 @@ const page = () => {
 
     fetchMovies();
 
+    console.log("first")
+
     window.scrollTo({
       top: 0,
       behavior: 'smooth',

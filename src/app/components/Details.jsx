@@ -52,7 +52,7 @@ const Details = ({ movie, id, type }) => {
   return (
     <div className="md:flex-row flex-col flex gap-6 text-sm md:text-base">
       {notification.show && (
-        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-600 text-center text-white py-2 px-5 rounded-lg shadow-xl z-50 animate-fade-in-out">
+        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-600 text-center text-white p-2 font-bold rounded-lg shadow-xl z-50 animate-fade-in-out">
           {notification.message}
         </div>
       )}

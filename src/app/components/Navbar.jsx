@@ -27,6 +27,21 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
 
   const [content, setContent] = useState(null);
   const navbarRef = useRef(null);
+  const [isMobileView, setIsMobileView] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const updateStateFromStorage = () => {
@@ -50,7 +65,16 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
   }, []);
 
   useEffect(() => {
+
+    if (!isMobileView) {
+      return;
+    }
+
     const handleClickOutside = (event) => {
+      if (event.target.closest('[data-menu-toggle="true"]')) {
+        return;
+      }
+
       if (menuOpen && navbarRef.current && !navbarRef.current.contains(event.target)) {
         setMenuOpen(false);
       }
@@ -88,7 +112,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
             } 
             ${menuOpen ? "md:flex-row lg:flex-col" : "lg:flex-row md:flex-col"}`}
-          onClick={() => setMenuOpen(menuOpen && !menuOpen)}
+          onClick={() => setMenuOpen(false)}
 
         >
           <HugeiconsIcon
@@ -112,7 +136,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             ? "bg-purple-900/50 border-cyan-300"
             : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
             }`}
-          onClick={() => setMenuOpen(menuOpen && !menuOpen)}
+          onClick={() => setMenuOpen(false)}
         >
           <HugeiconsIcon
             icon={Video01Icon}
@@ -134,7 +158,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             ? "bg-purple-900/50 border-cyan-300"
             : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
             }`}
-          onClick={() => setMenuOpen(menuOpen && !menuOpen)}
+          onClick={() => setMenuOpen(false)}
         >
           <HugeiconsIcon
             icon={Tv01Icon}
@@ -151,12 +175,12 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
           </li>
         </Link>
         <Link
-          href={getWatchUrl()} // Usamos la función auxiliar para más seguridad
+          href={getWatchUrl()}
           className={`flex items-center space-x-4 p-3 cursor-pointer transition-all duration-300 border-l-4 ${watch
             ? "bg-purple-900/50 border-cyan-300"
             : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
             }`}
-          onClick={() => setMenuOpen(menuOpen && !menuOpen)}
+          onClick={() => setMenuOpen(false)}
         >
           <HugeiconsIcon
             icon={ComputerVideoIcon}
@@ -169,7 +193,6 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             className={`font-bold font-display tracking-wide ${menuOpen ? "lg:hidden" : "md:hidden lg:block"
               } ${watch ? "text-cyan-300" : "text-white"}`}
           >
-            {/* Opcional: Puedes deshabilitar el botón si no hay nada que ver */}
             Watch
           </li>
         </Link>
@@ -179,7 +202,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             ? "bg-purple-900/50 border-cyan-300"
             : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
             }`}
-          onClick={() => setMenuOpen(menuOpen && !menuOpen)}
+          onClick={() => setMenuOpen(false)}
         >
           <HugeiconsIcon
             icon={Search01Icon}
@@ -201,7 +224,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             ? "bg-purple-900/50 border-cyan-300"
             : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
             }`}
-          onClick={() => setMenuOpen(menuOpen && !menuOpen)}
+          onClick={() => setMenuOpen(false)}
         >
           <HugeiconsIcon
             icon={Comment02Icon}
@@ -223,7 +246,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             ? "bg-purple-900/50 border-cyan-300"
             : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
             }`}
-          onClick={() => setMenuOpen(menuOpen && !menuOpen)}
+          onClick={() => setMenuOpen(false)}
         >
           <HugeiconsIcon
             icon={FavouriteIcon}

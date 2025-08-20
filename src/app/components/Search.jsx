@@ -58,6 +58,7 @@ const Search = ({ menuOpen, setMenuOpen }) => {
           strokeWidth={2}
           onClick={toggleMenu}
           className="cursor-pointer"
+          data-menu-toggle="true"
         />
         <Link href={"/"}>
           <h1 className="hidden sm:flex font-display text-1xl md:text-2xl font-black text-red-500">
