@@ -23,7 +23,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
   const search = separetePath === "search";
   const watch = separetePath === "watch";
   const chat = separetePath === "chat";
-  const favourite = separetePath === "favourite";
+  const favourite = separetePath === "favoritas";
 
   const [content, setContent] = useState(null);
   const navbarRef = useRef(null);
@@ -94,8 +94,15 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
     if (content.type === "movie") {
       return `/watch/${content.id}?type=movie`;
     } else {
-      return `/watch/${content.id}?type=serie&season=${content.season}&episode=${content.episode}`;
+      return `/watch/${content.id}?type=serie&season=${content.season}&episode=${content.episode}&episodeSel=${content.episodeSel}`;
     }
+  };
+
+  const handleMenuClose = () => {
+    if (!isMobileView) {
+      return;
+    }
+    setMenuOpen(false);
   };
 
   return (
@@ -112,7 +119,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
             } 
             ${menuOpen ? "md:flex-row lg:flex-col" : "lg:flex-row md:flex-col"}`}
-          onClick={() => setMenuOpen(false)}
+          onClick={handleMenuClose}
 
         >
           <HugeiconsIcon
@@ -136,7 +143,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             ? "bg-purple-900/50 border-cyan-300"
             : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
             }`}
-          onClick={() => setMenuOpen(false)}
+          onClick={handleMenuClose}
         >
           <HugeiconsIcon
             icon={Video01Icon}
@@ -158,7 +165,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             ? "bg-purple-900/50 border-cyan-300"
             : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
             }`}
-          onClick={() => setMenuOpen(false)}
+          onClick={handleMenuClose}
         >
           <HugeiconsIcon
             icon={Tv01Icon}
@@ -180,7 +187,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             ? "bg-purple-900/50 border-cyan-300"
             : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
             }`}
-          onClick={() => setMenuOpen(false)}
+          onClick={handleMenuClose}
         >
           <HugeiconsIcon
             icon={ComputerVideoIcon}
@@ -202,7 +209,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             ? "bg-purple-900/50 border-cyan-300"
             : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
             }`}
-          onClick={() => setMenuOpen(false)}
+          onClick={handleMenuClose}
         >
           <HugeiconsIcon
             icon={Search01Icon}
@@ -224,7 +231,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             ? "bg-purple-900/50 border-cyan-300"
             : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
             }`}
-          onClick={() => setMenuOpen(false)}
+          onClick={handleMenuClose}
         >
           <HugeiconsIcon
             icon={Comment02Icon}
@@ -246,7 +253,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             ? "bg-purple-900/50 border-cyan-300"
             : "border-transparent hover:bg-purple-900/30 hover:border-purple-500"
             }`}
-          onClick={() => setMenuOpen(false)}
+          onClick={handleMenuClose}
         >
           <HugeiconsIcon
             icon={FavouriteIcon}

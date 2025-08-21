@@ -36,6 +36,7 @@ const page = () => {
   const type = useSearchParams().get("type");
   const season = useSearchParams().get("season");
   const episode = useSearchParams().get("episode");
+  const episodeSel = useSearchParams().get("episodeSel");
   const { id } = params;
   const [embedUrl, setEmbedUrl] = useState("");
   const [movie, setMovie] = useState(null);
@@ -43,7 +44,7 @@ const page = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [details, setDetails] = useState(null);
   const [error, setError] = useState(null);
-  const [episodeSelected, setEpisodeSelected] = useState(1);
+  const [episodeSelected, setEpisodeSelected] = useState(episodeSel ? parseInt(episodeSel) : 1);
   let episodeArray = [];
 
   const router = useRouter();
@@ -98,7 +99,7 @@ const page = () => {
       if (type === 'movie') {
         dataToSave = { id, type: 'movie', title: movie?.title };
       } else if (type === 'serie' || type === 'tv') {
-        dataToSave = { id, type: 'serie', season, episode: episode, title: movie?.name };
+        dataToSave = { id, type: 'serie', season, episode: episode, title: movie?.name, episodeSel: episodeSelected };
       }
 
       if (dataToSave) {
@@ -118,7 +119,7 @@ const page = () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       saveProgress();
     };
-  }, [id, type, season, episode, movie]);
+  }, [id, type, season, episode, movie, episodeSelected]);
 
   const handleEpisode = async (epi) => {
     const embedUrl = `https://vidsrc.to/embed/tv/${id}/${season}/${epi}`;
