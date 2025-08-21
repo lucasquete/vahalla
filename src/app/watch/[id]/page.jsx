@@ -67,7 +67,7 @@ const page = () => {
           );
           setMovie(response.data);
         } else {
-          const embedUrl = `https://vidsrc.to/embed/tv/${id}/${season}/1`;
+          const embedUrl = `https://vidsrc.to/embed/tv/${id}/${season}/${episodeSelected}`;
           setEmbedUrl(embedUrl);
           const response = await axios.get(
             `https://api.themoviedb.org/3/tv/${id}?api_key=${API_KEY}`
@@ -87,7 +87,7 @@ const page = () => {
     };
 
     fetchMovieDetails();
-  }, [id, season]);
+  }, [id, season, episodeSelected]);
 
   useEffect(() => {
 
