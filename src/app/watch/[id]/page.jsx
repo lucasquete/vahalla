@@ -93,7 +93,7 @@ const page = () => {
 
     const saveProgress = () => {
       if (!id || !type) return;
-
+      
       let dataToSave;
 
       if (type === 'movie') {
@@ -130,7 +130,7 @@ const page = () => {
   const handleSeason = (season_num, episode_count) => {
     if (season_num.toString() !== season) {
       router.push(
-        `/watch/${id}?type-serie&season=${season_num}&episode=${episode_count}`
+        `/watch/${id}?type=serie&season=${season_num}&episode=${episode_count}`
       );
       setIsOpen(false);
       setEpisodeSelected(1);
